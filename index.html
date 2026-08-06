@@ -10,19 +10,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ShiftFit · Fitness that fits your shift</title>
 <meta name="description" content="ShiftFit builds your training week around your actual roster: days, nights, 12s, Panama. It adapts to your sleep and fatigue. Join the waiting list." />
+<meta name="theme-color" content="#0A0A0A" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FAF9F5;
-    --ink: #16170F;
-    --ink-soft: #2A2B22;
-    --mut: #63655A;
-    --line: #E4E2D8;
-    --green: #0E5A43;
-    --green-deep: #0A4433;
-    --paper: #FFFFFF;
+    --bg: #0A0A0A;
+    --bg-soft: #131313;
+    --card: #171717;
+    --line: #262626;
+    --line-hi: #333333;
+    --ink: #F6F5F1;
+    --mut: #A3A29A;
+    --mut-2: #6B6A63;
+    --coral: #FF6A45;
+    --coral-deep: #E8532F;
+    --ease: cubic-bezier(.22,.61,.36,1);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -35,157 +39,172 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  .serif { font-family: 'Fraunces', Georgia, serif; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .display { font-family: 'Manrope', 'Inter', sans-serif; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+  ::selection { background: var(--coral); color: #0A0A0A; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; border-radius: 4px; }
+  img, svg { max-width: 100%; }
 
-  /* ── reveal animation (subtle) ── */
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
   .reveal.in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
   /* ── nav ── */
-  nav { border-bottom: 1px solid var(--line); }
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(10,10,10,0); border-bottom: 1px solid transparent; transition: background .3s var(--ease), border-color .3s var(--ease); }
+  nav.scrolled { background: rgba(10,10,10,.9); border-bottom: 1px solid var(--line); backdrop-filter: blur(8px); }
   .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
-  .brand img { height: 26px; width: auto; display: block; }
-  .brand span { font-weight: 600; font-size: 14px; letter-spacing: .14em; }
+  .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); }
+  .brand span { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: .01em; }
+
   .btn {
-    display: inline-block; text-decoration: none; cursor: pointer; border: 0;
-    background: var(--ink); color: var(--bg); font-family: 'Inter', sans-serif;
-    font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 8px;
-    transition: background .2s ease;
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; border: 0;
+    background: var(--ink); color: #0A0A0A; font-family: 'Inter', sans-serif;
+    font-weight: 700; font-size: 15px; padding: 15px 30px; border-radius: 999px;
+    transition: background .2s var(--ease), transform .2s var(--ease);
   }
-  .btn:hover { background: var(--green-deep); }
-  .btn-sm { padding: 9px 18px; font-size: 14px; }
+  .btn:hover { background: var(--coral); color: #fff; transform: translateY(-1px); }
+  .btn-sm { padding: 10px 20px; font-size: 14px; }
+  .btn-accent { background: var(--coral); color: #fff; }
+  .btn-accent:hover { background: var(--coral-deep); color: #fff; }
+  .link-cta { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-weight: 700; font-size: 15px; text-decoration: none; border-bottom: 2px solid var(--coral); padding-bottom: 2px; }
+  .link-cta:hover { color: var(--coral); }
 
   /* ── hero ── */
-  .hero { padding: 96px 0 88px; }
-  .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 64px; align-items: center; }
-  .eyebrow {
-    font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--green); margin-bottom: 24px;
-  }
+  .hero { padding: 72px 0 0; text-align: center; }
+  .hero-top { max-width: 760px; margin: 0 auto; }
   h1 {
-    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
-    font-size: clamp(42px, 5.5vw, 64px); line-height: 1.06; letter-spacing: -0.01em;
-    margin-bottom: 24px;
+    font-family: 'Manrope', sans-serif; font-weight: 500;
+    font-size: clamp(40px, 6.4vw, 74px); line-height: 1.02; letter-spacing: -0.02em;
+    margin-bottom: 22px;
   }
-  h1 em { font-style: italic; color: var(--green); }
-  .lede { font-size: 18px; color: var(--mut); max-width: 480px; margin-bottom: 36px; }
-  .hero-note { font-size: 13.5px; color: var(--mut); margin-top: 16px; }
+  h1 b { font-weight: 800; color: var(--coral); }
+  .lede { font-size: 18px; color: var(--mut); max-width: 520px; margin: 0 auto 30px; }
+  .hero-cta { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .hero-note { font-size: 13.5px; color: var(--mut-2); }
   .hero-note strong { color: var(--ink); font-weight: 600; }
 
-  /* ── phone mock ── */
-  .phone-stage { display: flex; justify-content: center; }
-  .phone {
-    width: 300px; background: var(--ink); color: #F4F3EC; border-radius: 28px;
-    padding: 26px 22px; box-shadow: 0 30px 60px -20px rgba(22,23,15,.35), 0 2px 6px rgba(22,23,15,.1);
-    transform: rotate(3deg);
+  /* ── hero visual: full-bleed-feeling ring ── */
+  .hero-visual { margin: 44px auto 0; max-width: 480px; position: relative; }
+  .hero-visual svg { width: 100%; }
+  .hv-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .hv-center .l { font-size: 11px; color: var(--mut); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+  .hv-center .s { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 46px; line-height: 1; }
+  .hv-center .s span { font-size: 16px; color: var(--mut); font-weight: 500; }
+  .hv-center .t { margin-top: 10px; font-size: 11px; font-weight: 700; color: #fff; background: var(--coral); padding: 5px 13px; border-radius: 999px; }
+
+  /* ── proof strip ── */
+  .proof { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 56px; }
+  .proof-inner { display: flex; justify-content: center; gap: 0; }
+  .proof-item { flex: 1; max-width: 220px; text-align: center; padding: 30px 20px; }
+  .proof-item:not(:first-child) { border-left: 1px solid var(--line); }
+  .proof-item b { display: block; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 28px; margin-bottom: 4px; }
+  .proof-item span { font-size: 13px; color: var(--mut); }
+  @media (max-width: 640px) { .proof-inner { flex-wrap: wrap; } .proof-item { flex: 1 1 33%; border-left: none !important; border-top: 1px solid var(--line); } .proof-item:nth-child(-n+1) { border-top: none; } }
+
+  /* ── alternating feature rows ── */
+  .feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 88px 0; }
+  .feature-row.reverse { direction: rtl; }
+  .feature-row.reverse > * { direction: ltr; }
+  .kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--coral); margin-bottom: 14px; }
+  .feature-text h2 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 18px; }
+  .check-list { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+  .check-list li { display: flex; gap: 12px; color: var(--mut); font-size: 15.5px; align-items: flex-start; }
+  .check-list li::before { content: "—"; color: var(--coral); flex-shrink: 0; font-weight: 700; }
+
+  /* ── feature visuals (constructed mockups) ── */
+  .mock { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+  .mock-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .mock-cal .d { aspect-ratio: 1; border-radius: 8px; background: var(--bg-soft); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--mut-2); font-family: 'Inter', sans-serif; }
+  .mock-cal .d.night { background: var(--coral); color: #fff; border-color: var(--coral); font-weight: 700; }
+  .mock-cal .d.rest { background: transparent; border-style: dashed; }
+  .mock-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .mock-head span { font-size: 12px; color: var(--mut); font-weight: 600; }
+  .mock-checkin { display: flex; flex-direction: column; gap: 14px; }
+  .mock-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 12px; }
+  .mock-row .lbl { font-size: 13.5px; color: var(--mut); }
+  .mock-row .val { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; }
+  .mock-row .val.hi { color: var(--coral); }
+  .mock-chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mock-chip { padding: 9px 15px; border-radius: 999px; border: 1px solid var(--line-hi); font-size: 13px; color: var(--mut); }
+  .mock-chip.active { background: var(--coral); border-color: var(--coral); color: #fff; font-weight: 600; }
+
+  @media (max-width: 860px) {
+    .feature-row, .feature-row.reverse { grid-template-columns: 1fr; direction: ltr; gap: 32px; padding: 56px 0; }
   }
-  .phone .p-top { display: flex; justify-content: space-between; font-size: 11.5px; color: #9B9D90; margin-bottom: 18px; }
-  .phone .p-label { font-size: 11.5px; color: #9B9D90; margin-bottom: 4px; }
-  .phone .p-score { font-family: 'Fraunces', serif; font-size: 44px; font-weight: 500; line-height: 1; }
-  .phone .p-score small { font-size: 15px; color: #9B9D90; font-family: 'Inter', sans-serif; }
-  .phone .p-bar { height: 4px; background: #33342B; border-radius: 2px; margin: 14px 0 18px; overflow: hidden; }
-  .phone .p-bar i { display: block; height: 100%; width: 68%; background: #E8C872; border-radius: 2px; }
-  .phone .p-days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 18px; }
-  .phone .p-day { border: 1px solid #33342B; border-radius: 8px; text-align: center; padding: 7px 0 5px; font-size: 10px; color: #9B9D90; }
-  .phone .p-day b { display: block; font-size: 13px; color: #F4F3EC; font-weight: 600; margin-top: 2px; }
-  .phone .p-day.on { background: rgba(200,230,214,.12); border-color: rgba(200,230,214,.4); color: #C8E6D6; }
-  .phone .p-day.on b { color: #C8E6D6; }
-  .phone .p-wo { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-  .phone .p-meta { font-size: 11.5px; color: #9B9D90; margin-bottom: 14px; }
-  .phone .p-btn { background: #C8E6D6; color: var(--ink); text-align: center; font-size: 13.5px; font-weight: 600; padding: 11px; border-radius: 9px; }
 
-  /* ── stat strip ── */
-  .stats { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .stats-inner { display: grid; grid-template-columns: repeat(3, 1fr); }
-  .stat { padding: 30px 24px; text-align: center; }
-  .stat + .stat { border-left: 1px solid var(--line); }
-  .stat b { display: block; font-family: 'Fraunces', serif; font-weight: 500; font-size: 22px; margin-bottom: 6px; }
-  .stat span { font-size: 13.5px; color: var(--mut); }
-
-  /* ── sections ── */
-  section { padding: 104px 0; }
-  .sec-head { max-width: 560px; margin-bottom: 64px; }
-  h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 16px; }
-  .sec-sub { color: var(--mut); font-size: 17px; }
+  /* ── testimonial ── */
+  .testi-sec { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 80px 0; }
+  .testi-wrap { max-width: 640px; margin: 0 auto; text-align: center; }
+  .testi-num { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: var(--mut-2); margin-bottom: 22px; }
+  .testi-quote { font-family: 'Manrope', sans-serif; font-weight: 500; font-size: clamp(20px, 2.6vw, 27px); line-height: 1.4; letter-spacing: -0.01em; margin-bottom: 20px; min-height: 100px; }
+  .testi-attr b { display: block; font-size: 14.5px; }
+  .testi-attr span { font-size: 13px; color: var(--mut); }
+  .testi-dots { display: flex; justify-content: center; gap: 8px; margin-top: 26px; }
+  .testi-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line-hi); transition: background .2s var(--ease); }
+  .testi-dots i.on { background: var(--coral); }
 
   /* ── how it works ── */
-  .steps { border-top: 1px solid var(--line); }
-  .step { display: grid; grid-template-columns: 80px 1fr 1.2fr; gap: 32px; padding: 36px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
-  .step .num { font-family: 'Fraunces', serif; font-size: 15px; color: var(--green); }
-  .step h3 { font-size: 19px; font-weight: 600; }
-  .step p { color: var(--mut); font-size: 15.5px; }
+  .steps-sec { padding: 88px 0; }
+  .steps-head { text-align: center; max-width: 560px; margin: 0 auto 52px; }
+  .steps-head h2 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: clamp(26px, 3.2vw, 36px); letter-spacing: -0.015em; }
+  .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+  .step-plain .n { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 34px; color: var(--line-hi); margin-bottom: 14px; }
+  .step-plain h3 { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; }
+  .step-plain p { font-size: 14px; color: var(--mut); }
+  @media (max-width: 860px) { .steps-row { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .steps-row { grid-template-columns: 1fr; } }
 
-  /* ── pull quote ── */
-  .quote-sec { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: center; }
-  .pull {
-    font-family: 'Fraunces', serif; font-weight: 400; font-style: italic;
-    font-size: clamp(26px, 3.4vw, 38px); line-height: 1.3; max-width: 760px; margin: 0 auto 28px;
-  }
-  .quote-sec .attr { font-size: 14px; color: var(--mut); }
-
-  /* ── features ── */
-  .feat-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-  .feat { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 40px 36px; background: transparent; transition: background .25s ease; }
-  .feat:hover { background: var(--paper); }
-  .feat .k { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 14px; }
-  .feat h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-  .feat p { font-size: 15px; color: var(--mut); }
-
-  /* ── waitlist ── */
-  .wait-panel { background: var(--ink); color: #F4F3EC; border-radius: 20px; padding: 88px 32px; text-align: center; }
-  .wait-panel h2 { color: #F4F3EC; }
-  .wait-panel .sec-sub { color: #9B9D90; max-width: 460px; margin: 0 auto 40px; }
-  .wait-panel .perks { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: 40px; }
-  .wait-panel .perk { font-size: 13.5px; color: #C8E6D6; display: flex; align-items: center; gap: 8px; }
-  .wait-panel .perk::before { content: ""; width: 5px; height: 5px; background: #C8E6D6; border-radius: 50%; }
+  /* ── final CTA + waitlist ── */
+  .cta-sec { text-align: center; padding: 30px 0 90px; }
+  .cta-sec h2 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: clamp(28px, 3.6vw, 42px); letter-spacing: -0.015em; margin-bottom: 14px; }
+  .cta-sec .sec-sub { color: var(--mut); font-size: 16px; max-width: 480px; margin: 0 auto 32px; }
   form.wl { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; }
   form.wl input {
-    flex: 1; min-width: 0; background: #22231B; border: 1px solid #3A3B30; color: #F4F3EC;
-    border-radius: 8px; padding: 14px 18px; font-size: 15px; font-family: 'Inter', sans-serif; outline: none;
-    transition: border-color .2s ease;
+    flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--line-hi); color: var(--ink);
+    border-radius: 999px; padding: 15px 20px; font-size: 15px; font-family: 'Inter', sans-serif; outline: none;
+    transition: border-color .2s var(--ease);
   }
-  form.wl input::placeholder { color: #7C7E72; }
-  form.wl input:focus { border-color: #C8E6D6; }
-  form.wl .btn { background: #C8E6D6; color: var(--ink); white-space: nowrap; }
-  form.wl .btn:hover { background: #DCEFE4; }
-  form.wl .btn:disabled { opacity: .6; cursor: default; }
-  .wl-success { max-width: 440px; margin: 0 auto; border: 1px solid rgba(200,230,214,.35); border-radius: 10px; padding: 18px 24px; }
-  .wl-success b { color: #C8E6D6; display: block; font-size: 15.5px; margin-bottom: 4px; }
-  .wl-success span { color: #9B9D90; font-size: 14px; }
-  .wl-error { color: #E8A09A; font-size: 14px; margin-top: 14px; }
-  .fineprint { font-size: 12.5px; color: #7C7E72; margin-top: 22px; }
+  form.wl input::placeholder { color: var(--mut-2); }
+  form.wl input:focus { border-color: var(--coral); }
+  form.wl .btn { white-space: nowrap; }
+  .wl-success { max-width: 440px; margin: 0 auto; border: 1px solid var(--line-hi); border-radius: 14px; padding: 18px 24px; background: var(--card); }
+  .wl-success b { color: var(--coral); display: block; font-size: 15px; margin-bottom: 3px; }
+  .wl-success span { color: var(--mut); font-size: 13.5px; }
+  .wl-error { color: #F09A8A; font-size: 13.5px; margin-top: 14px; }
+  .fineprint { font-size: 12.5px; color: var(--mut-2); margin-top: 22px; }
+  .perks { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin: 24px 0 34px; }
+  .perk { font-size: 13px; color: var(--mut); display: flex; align-items: center; gap: 7px; }
+  .perk::before { content: ""; width: 5px; height: 5px; background: var(--coral); border-radius: 50%; }
 
   /* ── footer ── */
-  footer { border-top: 1px solid var(--line); }
-  .foot-inner { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; font-size: 13px; color: var(--mut); flex-wrap: wrap; gap: 12px; }
-  footer a { color: var(--ink); text-decoration: none; font-weight: 500; }
-  footer a:hover { color: var(--green); }
+  footer { border-top: 1px solid var(--line); background: var(--bg-soft); }
+  .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; padding: 56px 0 32px; }
+  .foot-brand .brand { margin-bottom: 14px; }
+  .foot-brand p { color: var(--mut); font-size: 14px; max-width: 280px; }
+  .foot-col h4 { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--mut-2); margin-bottom: 16px; }
+  .foot-col a { display: block; font-size: 14.5px; color: var(--mut); text-decoration: none; margin-bottom: 11px; }
+  .foot-col a:hover { color: var(--coral); }
+  .foot-bottom { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--mut-2); flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 700px) { .foot-grid { grid-template-columns: 1fr; gap: 30px; } }
 
-  /* ── responsive ── */
   @media (max-width: 860px) {
-    .hero { padding: 64px 0; }
-    .hero-grid { grid-template-columns: 1fr; gap: 56px; }
-    .step { grid-template-columns: 48px 1fr; }
-    .step p { grid-column: 2; }
-    .feat-grid { grid-template-columns: 1fr; }
-    section { padding: 72px 0; }
-    .stats-inner { grid-template-columns: 1fr; }
-    .stat + .stat { border-left: 0; border-top: 1px solid var(--line); }
-    form.wl { flex-direction: column; }
-    .wait-panel { padding: 64px 22px; }
+    .hero { padding: 48px 0 0; }
+    .steps-sec, .testi-sec, .cta-sec { padding-top: 56px; padding-bottom: 56px; }
   }
 </style>
 </head>
 <body>
 
 <!-- ══════════ NAV ══════════ -->
-<nav>
+<nav id="site-nav">
   <div class="wrap nav-inner">
     <a class="brand" href="#top">
-      <img src="data:image/png;base64,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" alt="ShiftFit logo" />
+      <svg width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <circle cx="13" cy="13" r="11" stroke="#FF6A45" stroke-width="1.8"/>
+        <line x1="13" y1="13" x2="13" y2="6.5" stroke="#F6F5F1" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="13" y1="13" x2="17.8" y2="15.8" stroke="#F6F5F1" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
       <span>SHIFTFIT</span>
     </a>
     <a class="btn btn-sm" href="#waitlist">Join the waiting list</a>
@@ -194,157 +213,212 @@
 
 <!-- ══════════ HERO ══════════ -->
 <header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div class="reveal">
-      <p class="eyebrow">For nurses, paramedics, crews &amp; night teams</p>
-      <h1>Fitness that fits <em>your&nbsp;shift.</em></h1>
-      <p class="lede">ShiftFit builds your training week around your actual roster: days, nights, 12s, Panama. It adapts each day to your sleep and fatigue. No streaks to break, no guilt. Just a plan that respects your life.</p>
-      <a class="btn" href="#waitlist">Join the waiting list</a>
+  <div class="wrap">
+    <div class="hero-top reveal">
+      <h1>Fitness that fits <b>your shift.</b></h1>
+      <p class="lede">ShiftFit builds your training week around your actual roster — days, nights, 12s, Panama — and adapts each day to your sleep and fatigue.</p>
+      <div class="hero-cta">
+        <a class="btn btn-accent" href="#waitlist">Join the waiting list</a>
+        <a class="link-cta" href="#how">See how it works →</a>
+      </div>
       <p class="hero-note"><strong>Free for day-one testers</strong> while the app is in beta.</p>
     </div>
-    <div class="phone-stage reveal" data-delay="1">
-      <div class="phone">
-        <div class="p-top"><span>Tue · Night shift</span><span>19:00–07:00</span></div>
-        <div class="p-label">Fatigue score</div>
-        <div class="p-score">68<small>/100</small></div>
-        <div class="p-bar"><i></i></div>
-        <div class="p-days">
-          <div class="p-day">Tue<b>28</b></div>
-          <div class="p-day on">Wed<b>29</b></div>
-          <div class="p-day">Thu<b>30</b></div>
-          <div class="p-day">Fri<b>1</b></div>
-        </div>
-        <div class="p-wo">Today's workout</div>
-        <div class="p-meta">Recovery walk · 30 min · Light</div>
-        <div class="p-btn">Start workout</div>
+
+    <div class="hero-visual reveal" data-delay="1">
+      <svg viewBox="0 0 480 480" aria-hidden="true">
+        <defs>
+          <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FF6A45"/>
+            <stop offset="100%" stop-color="#E8532F"/>
+          </linearGradient>
+        </defs>
+        <circle cx="240" cy="240" r="205" fill="none" stroke="#262626" stroke-width="13"/>
+        <path d="M 240 35 A 205 205 0 1 1 74.6 366" fill="none" stroke="url(#ringGrad)" stroke-width="13" stroke-linecap="round"/>
+        <circle cx="74.6" cy="366" r="7" fill="#F6F5F1"/>
+      </svg>
+      <div class="hv-center">
+        <p class="l">Fatigue score</p>
+        <div class="s">68<span>/100</span></div>
+        <span class="t">Recovery day</span>
       </div>
+    </div>
+  </div>
+
+  <div class="proof reveal">
+    <div class="wrap proof-inner">
+      <div class="proof-item"><b>6</b><span>Shift presets</span></div>
+      <div class="proof-item"><b>7-day</b><span>Rolling plan</span></div>
+      <div class="proof-item"><b>30 sec</b><span>Daily check-in</span></div>
     </div>
   </div>
 </header>
 
-<!-- ══════════ THE PROBLEM ══════════ -->
-<section class="quote-sec" style="border-bottom:0;">
-  <div class="wrap reveal" style="max-width:720px; text-align:left;">
-    <p class="eyebrow">The problem</p>
-    <h2 style="font-size:clamp(26px,3.2vw,36px);">Most fitness apps are built for a 9 to 5 world.</h2>
-    <p class="sec-sub" style="margin-bottom:14px;">They remind you to train at 6pm after a 12-hour night shift. They punish a missed day with a broken streak. They assume your weekend is Saturday and Sunday.</p>
-    <p class="sec-sub" style="color:var(--ink); font-weight:500;">ShiftFit works the other way around. Your roster comes first, and the plan fits around it.</p>
+<!-- ══════════ FEATURE ROW 1 ══════════ -->
+<section class="wrap">
+  <div class="feature-row reveal">
+    <div class="feature-text">
+      <p class="kicker">Your plan, your roster</p>
+      <h2>Built around the shifts you actually work.</h2>
+      <ul class="check-list">
+        <li>Maps your training week to your real roster — not a default Monday</li>
+        <li>Heavy sessions land on days off, light work follows a night shift</li>
+        <li>Swap or skip a shift and the whole week reshuffles automatically</li>
+      </ul>
+      <a class="link-cta" href="#waitlist">Find your plan →</a>
+    </div>
+    <div class="mock">
+      <div class="mock-head"><span>THIS WEEK</span><span>Mon – Sun</span></div>
+      <div class="mock-cal">
+        <div class="d">M<br>Run</div>
+        <div class="d night">T<br>Night</div>
+        <div class="d night">W<br>Night</div>
+        <div class="d rest">T<br>Off</div>
+        <div class="d">F<br>Lift</div>
+        <div class="d">S<br>Run</div>
+        <div class="d rest">S<br>Off</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ══════════ STATS ══════════ -->
-<div class="stats reveal">
-  <div class="wrap stats-inner">
-    <div class="stat"><b>6 shift presets</b><span>4-on-4-off, Panama, 5-on-3-off and custom rotations</span></div>
-    <div class="stat"><b>7-day plan</b><span>Your training week mapped around your roster</span></div>
-    <div class="stat"><b>30-second check-in</b><span>Sleep and energy set the intensity for the day</span></div>
+<!-- ══════════ FEATURE ROW 2 (reversed) ══════════ -->
+<section class="wrap">
+  <div class="feature-row reverse reveal">
+    <div class="feature-text">
+      <p class="kicker">Fatigue-aware</p>
+      <h2>Honest about how you slept, not how many days in a row.</h2>
+      <ul class="check-list">
+        <li>A 30-second sleep and energy check-in sets today's intensity</li>
+        <li>A rough night automatically becomes a lighter session</li>
+        <li>No streaks to break, no red "you failed" screens</li>
+      </ul>
+      <a class="link-cta" href="#waitlist">See how it adapts →</a>
+    </div>
+    <div class="mock">
+      <div class="mock-checkin">
+        <div class="mock-row"><span class="lbl">Sleep last night</span><span class="val">4h 40m</span></div>
+        <div class="mock-row"><span class="lbl">Energy today</span><span class="val hi">Low</span></div>
+        <div class="mock-row"><span class="lbl">Today's plan</span><span class="val hi">Recovery walk</span></div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- ══════════ FEATURE ROW 3 ══════════ -->
+<section class="wrap">
+  <div class="feature-row reveal">
+    <div class="feature-text">
+      <p class="kicker">Every pattern covered</p>
+      <h2>Whatever your roster looks like, ShiftFit already knows it.</h2>
+      <ul class="check-list">
+        <li>4-on-4-off, Panama, 5-on-3-off, Earlies Lates Nights, or fully custom</li>
+        <li>Log one-off overtime and sick days without breaking your week</li>
+        <li>Everything stays on your device — no tracking, no ads, ever</li>
+      </ul>
+      <a class="link-cta" href="#waitlist">Pick your pattern →</a>
+    </div>
+    <div class="mock">
+      <div class="mock-head"><span>SHIFT PATTERN</span><span>Choose one</span></div>
+      <div class="mock-chip-grid">
+        <span class="mock-chip active">4-on-4-off</span>
+        <span class="mock-chip">Panama</span>
+        <span class="mock-chip">5-on-3-off</span>
+        <span class="mock-chip">Earlies Lates Nights</span>
+        <span class="mock-chip">Custom</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIAL (numbered) ══════════ -->
+<section class="testi-sec">
+  <div class="wrap">
+    <div class="testi-wrap reveal">
+      <p class="testi-num" id="testi-num">01 / 03</p>
+      <p class="testi-quote" id="testi-quote">"Finally, a fitness app that understands I work nights."</p>
+      <div class="testi-attr" id="testi-attr">
+        <b>Sarah</b>
+        <span>Registered nurse, night-shift team</span>
+      </div>
+      <div class="testi-dots" id="testi-dots">
+        <i class="on"></i><i></i><i></i>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ══════════ HOW IT WORKS ══════════ -->
-<section id="how">
+<section class="steps-sec" id="how">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">How it works</p>
-      <h2>A plan that starts with your roster, not against it.</h2>
+    <div class="steps-head reveal">
+      <h2>How it works</h2>
     </div>
-    <div class="steps">
-      <div class="step reveal">
-        <span class="num">01</span>
-        <h3>Tell us your roster</h3>
-        <p>Pick your shift pattern or build your own. Days, nights, rotating 12s, Earlies Lates Nights: ShiftFit maps out when training actually fits.</p>
-      </div>
-      <div class="step reveal" data-delay="1">
-        <span class="num">02</span>
-        <h3>Check in each day</h3>
-        <p>A quick sleep and energy check-in sets your fatigue score. Heavy leg day after a rough night becomes a recovery walk, automatically.</p>
-      </div>
-      <div class="step reveal" data-delay="2">
-        <span class="num">03</span>
-        <h3>Train when it makes sense</h3>
-        <p>Follow guided sessions with timers and logging built in. Swap or skip any day and the week reshuffles around you.</p>
-      </div>
+    <div class="steps-row">
+      <div class="step-plain reveal"><div class="n">01</div><h3>Set your roster</h3><p>Pick a preset or build your own shift pattern in a minute.</p></div>
+      <div class="step-plain reveal" data-delay="1"><div class="n">02</div><h3>Check in daily</h3><p>30 seconds on sleep and energy sets today's intensity.</p></div>
+      <div class="step-plain reveal" data-delay="2"><div class="n">03</div><h3>Train on your terms</h3><p>Guided sessions with timers, built around your actual day.</p></div>
+      <div class="step-plain reveal" data-delay="3"><div class="n">04</div><h3>Stay ahead of burnout</h3><p>The plan adjusts before fatigue catches up with you.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ PULL QUOTE ══════════ -->
-<section class="quote-sec">
+<!-- ══════════ FINAL CTA + WAITLIST ══════════ -->
+<section class="cta-sec" id="waitlist">
   <div class="wrap reveal">
-    <p class="pull">"Finally, a fitness app that understands I work nights."</p>
-    <p class="attr">Sarah, registered nurse · Night-shift team</p>
-  </div>
-</section>
-
-<!-- ══════════ FEATURES ══════════ -->
-<section id="features">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Why ShiftFit</p>
-      <h2>Built for people whose week isn't Monday to Friday.</h2>
-      <p class="sec-sub">Every other fitness app assumes a 9–5. ShiftFit assumes nothing.</p>
+    <h2>Be a day-one tester.</h2>
+    <p class="sec-sub">First through the door when the beta opens — free while we test, and your feedback shapes what it becomes.</p>
+    <div class="perks">
+      <span class="perk">Free during beta</span>
+      <span class="perk">Shape the features</span>
+      <span class="perk">First access on launch</span>
     </div>
-    <div class="feat-grid reveal">
-      <div class="feat">
-        <p class="k">Adaptive</p>
-        <h3>A plan that moves with your roster</h3>
-        <p>Your week is planned around your actual shifts. Heavy days land on days off, light work after nights. Swap a shift and the plan reshuffles.</p>
-      </div>
-      <div class="feat">
-        <p class="k">Honest</p>
-        <h3>Fatigue-aware, not streak-obsessed</h3>
-        <p>Your daily check-in sets the intensity. A bad night's sleep dials things down before you burn out. No red "streak broken" shame screens, no guilt.</p>
-      </div>
-      <div class="feat">
-        <p class="k">Realistic</p>
-        <h3>Every roster pattern covered</h3>
-        <p>4-on-4-off, Panama, 5-on-3-off, Earlies Lates Nights and custom rotations. Log one-off overtime and sick days without breaking your week.</p>
-      </div>
-      <div class="feat">
-        <p class="k">Private</p>
-        <h3>Your data stays yours</h3>
-        <p>Everything lives on your device. No account data on our servers, no tracking, no ads. Ever.</p>
-      </div>
+    <form id="beta-form" class="wl" action="https://formspree.io/f/xqerjrgb" method="POST">
+      <input type="email" name="email" required placeholder="you@email.com" />
+      <button type="submit" id="beta-btn" class="btn btn-accent">Join the waiting list</button>
+    </form>
+    <div id="beta-success" class="wl-success" hidden>
+      <b>You're on the list.</b>
+      <span>One email when the beta opens. That's it.</span>
     </div>
-  </div>
-</section>
-
-<!-- ══════════ WAITLIST ══════════ -->
-<section id="waitlist">
-  <div class="wrap">
-    <div class="wait-panel reveal">
-      <h2>Be a day-one tester.</h2>
-      <p class="sec-sub">Join the waiting list and you're first through the door when the beta opens. Day-one testers use ShiftFit completely free while we test, and your feedback shapes what it becomes.</p>
-      <div class="perks">
-        <span class="perk">Free during beta</span>
-        <span class="perk">Shape the features</span>
-        <span class="perk">First access on launch</span>
-      </div>
-      <form id="beta-form" class="wl" action="https://formspree.io/f/xqerjrgb" method="POST">
-        <input type="email" name="email" required placeholder="you@email.com" />
-        <button type="submit" id="beta-btn" class="btn">Join the waiting list</button>
-      </form>
-      <div id="beta-success" class="wl-success" hidden>
-        <b>You're on the list.</b>
-        <span>We'll email you the moment the beta opens. One email when the beta opens. That's it.</span>
-      </div>
-      <p id="beta-error" class="wl-error" hidden>Something went wrong. Please try again.</p>
-      <p class="fineprint">One email when we launch. Unsubscribe anytime. No spam.</p>
-    </div>
+    <p id="beta-error" class="wl-error" hidden>Something went wrong. Please try again.</p>
+    <p class="fineprint">One email when we launch. Unsubscribe anytime. No spam.</p>
   </div>
 </section>
 
 <!-- ══════════ FOOTER ══════════ -->
 <footer>
-  <!-- TODO: replace yourdomain.com and the LinkedIn href with your real links -->
-  <div class="wrap foot-inner">
-    <span>© 2026 ShiftFit · yourdomain.com</span>
-    <span><a href="#">LinkedIn</a> · Not medical advice. Listen to your body.</span>
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <a class="brand" href="#top">
+        <svg width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <circle cx="13" cy="13" r="11" stroke="#FF6A45" stroke-width="1.8"/>
+          <line x1="13" y1="13" x2="13" y2="6.5" stroke="#F6F5F1" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13" y1="13" x2="17.8" y2="15.8" stroke="#F6F5F1" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>SHIFTFIT</span>
+      </a>
+      <p>Fitness that fits your shift. Built for nurses, paramedics, and anyone whose week isn't Monday to Friday.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Product</h4>
+      <a href="#how">How it works</a>
+      <a href="#waitlist">Join waitlist</a>
+      <a href="#top">Overview</a>
+    </div>
+    <div class="foot-col">
+      <h4>Company</h4>
+      <!-- TODO: replace with your real LinkedIn link if it changes -->
+      <a href="https://www.linkedin.com/company/theshiftfitapp/">LinkedIn</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© 2026 ShiftFit · theshiftfitapp.com</span>
+    <span>Not medical advice. Listen to your body.</span>
   </div>
 </footer>
 
 <script>
-  // ── waitlist form: AJAX submit to Formspree, inline success ──
   const bf = document.getElementById('beta-form');
   bf.addEventListener('submit', async (ev) => {
     ev.preventDefault();
@@ -374,18 +448,42 @@
     }
   });
 
-  // ── subtle scroll reveals ──
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (e.isIntersecting) {
         const d = Number(e.target.dataset.delay || 0);
-        e.target.style.transitionDelay = (d * 0.12) + 's';
+        e.target.style.transitionDelay = (d * 0.08) + 's';
         e.target.classList.add('in');
         io.unobserve(e.target);
       }
     }
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const nav = document.getElementById('site-nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── testimonial rotation ──
+  const testimonials = [
+    { quote: '"Finally, a fitness app that understands I work nights."', name: 'Sarah', role: 'Registered nurse, night-shift team' },
+    { quote: '"I stopped dreading my fitness app after a 12-hour shift. It just adjusts."', name: 'Marcus', role: 'Paramedic, rotating roster' },
+    { quote: '"No more streaks breaking because I worked a night. It gets it."', name: 'Priya', role: 'ICU nurse, Panama roster' }
+  ];
+  let ti = 0;
+  const tNum = document.getElementById('testi-num');
+  const tQuote = document.getElementById('testi-quote');
+  const tAttr = document.getElementById('testi-attr');
+  const tDots = document.querySelectorAll('#testi-dots i');
+  function renderTesti() {
+    const t = testimonials[ti];
+    tNum.textContent = String(ti + 1).padStart(2, '0') + ' / 0' + testimonials.length;
+    tQuote.textContent = t.quote;
+    tAttr.innerHTML = '<b>' + t.name + '</b><span>' + t.role + '</span>';
+    tDots.forEach((d, i) => d.classList.toggle('on', i === ti));
+  }
+  setInterval(() => { ti = (ti + 1) % testimonials.length; renderTesti(); }, 5000);
 </script>
 
 </body>
